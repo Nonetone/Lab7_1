@@ -1,9 +1,24 @@
 # frozen_string_literal: true
 
+require 'faker'
 require 'minitest/autorun'
 require_relative 'lab7_1_main'
 
 class Test < MiniTest::Test
+
+    def setup
+        @input_file_name = 'F.txt'
+        @output_file_name = 'G.txt'
+    
+        generate_input_file
+    end
+    
+    def test_generate_file_creates
+        func(Array.new(10) { 1 }, 10)
+    
+        assert File.exist?(input_file_name)
+    end
+
     def test_first
         func(Array.new(10) { 1 }, 10)
         file_f = File.new('F.txt', 'r')
@@ -24,6 +39,21 @@ class Test < MiniTest::Test
         (0..7).each { |ind| 
                     assert_equal(ord, arr[ind * 10..ind * 10 +9])}
                     file_p.close
+    end
+    
+    def teardown
+        File.delete(input_file_name) if File.exist?(input_file_name)
+        File.delete(output_file_name) if File.exist?(output_file_name)
+    end
+
+    private
+
+    attr_reader :input_file_name, :output_file_name
+  
+    def generate_input_file
+      sentence = Faker::Lorem.sentence
+      File.open(input_file_name, 'w') { |file| file.write sentence }
+      sentence
     end
 end
 
